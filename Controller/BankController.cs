@@ -2,12 +2,11 @@
 using BankManagementSystem.DTOs;
 using BankManagementSystem.Service;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 
-namespace BankManagementSystem.Controllers.V2
+namespace BankManagementSystem.Controllers.V1
 {
     [ApiController]
-    [ApiVersion("2.0")]
+    [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class BankController : ControllerBase
     {
@@ -17,45 +16,36 @@ namespace BankManagementSystem.Controllers.V2
         {
             this.service = service;
         }
-
-        [HttpGet("SearchByName")]
-        public IActionResult SearchByName(string name)
+        [HttpPost]
+        public IActionResult Add(BankAccountRequestDTO dto)
         {
-            return Ok(service.SearchByName(name));
+            service.Add(dto);
+            return Ok("Bank Account Created Successfully");
         }
 
-        [HttpGet("SearchByAccountNumber")]
-        public IActionResult SearchByAccountNumber(string AccountNumber)
+        [HttpGet]
+        public IActionResult GetAll()
         {
-            return Ok(service.SearchAccountNumber(AccountNumber));
+            return Ok(service.GetAll());
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetBYId(int id)
+        {
+            return Ok(service.GetById(id));
         }
 
-        [HttpPost("deposit")]
-        [SwaggerOperation(Summary = "Deposit Money",Description = "Deposit money into an existing bank account.")]
-        public IActionResult Deposit(DepositRequestDTO dto)
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
         {
-            service.Deposit(dto);
-
-            return Ok("Amount Deposited Successfully.");
+            service.Delete(id);
+            return Ok("Bank Account Deleted.");
         }
 
-        [HttpPost("withdraw")]
-        [SwaggerOperation(Summary = "Withdraw Money",Description = "Withdraw money from an existing bank account.")]
-        public IActionResult Withdraw(WithdrawRequestDTO dto)
+        [HttpPut("{id}")]
+        public IActionResult Update(int id,BankAccountRequestDTO dto)
         {
-            service.Withdraw(dto);
-
-            return Ok("Amount Withdrawn Successfully.");
+            service.Update(id, dto);
+            return Ok("Bank Account Deleted.");
         }
-
-        [HttpPost("transfer")]
-        [SwaggerOperation(Summary = "Transfer Money",Description = "Transfer money from one account to another account.")]
-        public IActionResult Transfer(TransferRequestDTO dto)
-        {
-            service.Transfer(dto);
-
-            return Ok("Amount Transferred Successfully.");
-        }
-
     }
 }
